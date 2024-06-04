@@ -1,0 +1,142 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+#flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+/* Add style for progress bar */
+#progress-bar {
+    height: 10px;
+    background-color: #ddd;
+    margin-bottom: 10px;
+    width: 100%; /* Add this line to ensure the progress bar expands to its container */
+}
+
+#progress-bar-fill {
+    height: 100%;
+    width: 0;
+    background-color: blue;
+    transition: width 0.3s; /* Add this line for a smooth transition effect */
+}
+
+
+#flashcard {
+    width: 200%; /* Adjust the width as needed */
+    max-width: 600px; /* Set a maximum width for better readability */
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(29, 29, 29, 0.4);
+    border-radius: 20px;
+    text-align: center;
+}
+
+#question {
+    font-size: 3.0em; /* Bigger font size for the question */
+    margin-bottom: 15px; /* Increased margin for better separation */
+}
+
+#options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px; /* Increased gap for better separation */
+}
+
+.option {
+    display: block;
+    width: 100%;
+    padding: 15px; /* Increased padding for better touch usability */
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2em; /* Bigger font size for answer choices */
+}
+
+/* Style for feedback message */
+#feedback {
+    margin-top: 15px; /* Increased margin for better separation */
+    font-weight: bold;
+    color: blue; /* default color for correct, can be adjusted */
+    font-size: 1.2em; /* Bigger font size for feedback message */
+}
+
+#feedback.incorrect {
+    color: red;
+}
+
+/* Button container style */
+#button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px; /* Increased margin for better separation */
+}
+
+/* Style for Previous and Next buttons with arrow icons */
+#prevButton,
+#nextButton {
+    background-color: blue;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+/* Button container style */
+
+/* Style for Previous and Next buttons with arrow icons */
+#prevButton {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-right: 25px; /* Add margin-right for spacing */
+}
+
+#nextButton {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 25px; /* Add margin-left for spacing */
+}
+
+/* Button container style */
+#button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px; /* Increased margin for better separation */
+}
+
+/* Style for Previous and Next buttons with arrow icons */
+#prevButton,
+#nextButton {
+    background-color: black;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-bottom: 100px; /* Add margin-top for higher positioning */
+}
+
+#prevButton:hover,
+#nextButton:hover {
+    background-color: #2980b9;
+}
