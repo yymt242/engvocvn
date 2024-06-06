@@ -36,7 +36,7 @@ function resetLocalStorage() {
     localStorage.setItem("my_currentCardIndex", null);
     localStorage.setItem("my_currentScore", null);
 }
-resetLocalStorage();
+//resetLocalStorage();
 // GET flashcards
 if (JSON.parse(localStorage.getItem("my_flashcards")) === null) {
     flashcards = flashcards_init;
