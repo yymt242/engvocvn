@@ -3,6 +3,11 @@ body, html {
     margin: 0;
     font-family: 'Arial', sans-serif;
 }
+#reset-button, #reset, #reset-icon, #percent-finish {
+    display: inline;
+    vertical-align: middle;
+}
+
 
 #question, #pos_, #image1 {
     display: inline;
@@ -13,6 +18,8 @@ body, html {
 #flashcard-container {
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    border-color: black;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -34,7 +41,7 @@ body, html {
 }
 
 #pluralnoun_, #ucnoun_, #v2_ {
-    font-size: 1.1em;
+    font-size: 0.8em;
     text-align: left;
     margin-left: 50px;
     color: rgb(0, 77, 6);
@@ -68,7 +75,7 @@ body, html {
     
 }
 #example_ {
-    font-size: 1.2em;
+    font-size: 0.8em;
     text-align: left;
     margin-left: 50px;
     margin-top: 25px;
@@ -76,7 +83,7 @@ body, html {
 }
 
 #verb_, #noun_, #adjective_, #adverb_ {
-    font-size: 1.1em;
+    font-size: 0.9em;
     text-align: left;
     margin-left: 50px;
 }
@@ -91,8 +98,8 @@ body, html {
     width: 100%;
     padding: 15px; /* Increased padding for better touch usability */
     cursor: pointer;
-    border: 1px solid black;
-    border-radius: 8px;
+    border: 2px solid black;
+    border-radius: 15px;
     text-align: center;
     font-size: 1.4em; /* Bigger font size for answer choices */
 }
@@ -135,6 +142,8 @@ body, html {
     font-size: 5em;
 }
 
+
+
 /* Button container style */
 
 /* Style for Previous and Next buttons with arrow icons */
@@ -150,7 +159,7 @@ body, html {
 }
 
 #nextButton {
-    background-color: #3498db;
+    background-color: #0099ff;
     color: #fff;
     padding: 10px 15px;
     border: none;
@@ -170,14 +179,15 @@ body, html {
 /* Style for Previous and Next buttons with arrow icons */
 #prevButton,
 #nextButton {
-    background-color: black;
+    background-color: rgb(0, 0, 255);
     color: #fff;
-    padding: 10px 15px;
+    padding: 10px 10px;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 5em;
-    margin-bottom: 20px; /* Add margin-top for higher positioning */
+    margin-right: 25px;
+    margin-bottom: 25px; /* Add margin-top for higher positioning */
     height: 70px;
     width: 140px;
 }

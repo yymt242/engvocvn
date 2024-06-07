@@ -34,26 +34,30 @@ let flashcards = flashcards_init;
 function resetLocalStorage() {
     localStorage.setItem("my_flashcards", null);
     localStorage.setItem("my_currentCardIndex", null);
-    localStorage.setItem("my_currentScore", null);
+    localStorage.setItem("my_currentScore", totalScore);
+    loadingLocalStorage();
+    location.reload();
 }
 //resetLocalStorage();
-// GET flashcards
-if (JSON.parse(localStorage.getItem("my_flashcards")) === null) {
-    flashcards = flashcards_init;
-} else {
-    flashcards = JSON.parse(localStorage.getItem("my_flashcards"));
-}
-// GET currentCardIndex
-if (JSON.parse(localStorage.getItem("my_currentCardIndex")) === null) {
-    currentCardIndex = 0;
-} else {
-    currentCardIndex = JSON.parse(localStorage.getItem("my_currentCardIndex"));
-}
-// GET currentScore
-if (JSON.parse(localStorage.getItem("my_currentScore")) === null) {
-    currentScore = totalScore;
-} else {
-    currentScore = JSON.parse(localStorage.getItem("my_currentScore"));
+function loadingLocalStorage() {
+    // GET flashcards
+    if (JSON.parse(localStorage.getItem("my_flashcards")) === null) {
+        flashcards = flashcards_init;
+    } else {
+        flashcards = JSON.parse(localStorage.getItem("my_flashcards"));
+    }
+    // GET currentCardIndex
+    if (JSON.parse(localStorage.getItem("my_currentCardIndex")) === null) {
+        currentCardIndex = 0;
+    } else {
+        currentCardIndex = JSON.parse(localStorage.getItem("my_currentCardIndex"));
+    }
+    // GET currentScore
+    if (JSON.parse(localStorage.getItem("my_currentScore")) === totalScore) {
+        currentScore = totalScore;
+    } else {
+        currentScore = JSON.parse(localStorage.getItem("my_currentScore"));
+    }
 }
 
 function playAudio() {
@@ -63,6 +67,7 @@ function playAudio() {
     audio.play();
 }
 
+loadingLocalStorage();
 let avgScore = totalScore / flashcards_init.length;
 let interval = 3 * avgScore;
 let passPercent = (interval - 3) / interval;
@@ -87,6 +92,7 @@ const feedbackElement = document.getElementById('feedback');
 const progressBarFill = document.getElementById('progress-bar-fill');
 const nextButton = document.getElementById('nextButton');
 const prevButton = document.getElementById('prevButton');
+let percentElement = document.getElementById('percent-finish');
 
 function selectNextIndex(flashcards) {
     let listScoreNOT0 = flashcards.filter(card => card.score > 0);
@@ -172,8 +178,12 @@ function showDef(word, meaning, pos, ipa, example, plural, uc, verb, noun, adjec
     } else {
         uc_nounElement.textContent = "Danh từ KHÔNG đếm được";
     }
+    if (ipa == 'nan') {
+        ipaElement.textContent = "";
+    } else {
+        ipaElement.textContent = "/ " + ipa + " /";
+    }
     
-    ipaElement.textContent = "/ " + ipa + " /";
     optionsContainer.innerHTML = '';
     feedbackElement.textContent = "";
 }
@@ -228,7 +238,12 @@ function showCard(index) {
         }
         if (currentScore == 1) {currentScore = 0;}
         const progress = (1 - currentScore / totalScore) * 100;
-    
+        
+        let totalWord = flashcards.length;
+        let learnedWord = (flashcards.filter(card => card.score === 0)).length;
+        if (learnedWord == totalWord -1) {learnedWord = totalWord};
+        percentElement.innerText = learnedWord.toFixed(0)  + '/' + totalWord.toFixed(0);
+        
         // Check if progressBarFill exists before updating its width
         if (progressBarFill) {
             progressBarFill.style.width = progress + '%';
