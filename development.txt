@@ -1,0 +1,15 @@
+previous button
+shuffle order/content of options
+more type of question
+    writing
+    viet -> eng
+question depend on the score
+refactor saving to local storage
+read data straight from csv, xlsx or sql database
+learn word family, uncountable noun
+add more vocabulary (math, computer, music,...)
+
+
+===========
+idiom, phrasal verb, collocation content
+grammar content
