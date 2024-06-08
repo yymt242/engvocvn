@@ -2516,7 +2516,10 @@ function showDef(word, meaning, pos, ipa, example, plural, uc, verb, noun, adjec
     optionsContainer.innerHTML = '';
     feedbackElement.textContent = "";
 }
-
+function skipCard() {
+    flashcards[currentCardIndex].score = 0;
+    showNextCard();
+}
 function showCard(index) {
     const currentCard = flashcards[index];
     if (currentCard.count == 0) {
