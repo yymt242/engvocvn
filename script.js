@@ -1025,7 +1025,7 @@ let flashcards_init = [
     { question: 'commune', options: ['dây thừng', 'xã', 'vật đệm trung gian', 'diễn giải\; diễn đạt bằng từ ngữ'], correctAnswer: 1, score: 6, conti: false, count: 0, example: 'nan', pos: 'n', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/commu/commune_01_00.mp3', ipa: 'ˈkɑː.mjuːn', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
     { question: 'community', options: ['quả thực, thực tình', 'rung chuông', 'cộng đồng', 'Doanh nhân'], correctAnswer: 2, score: 4, conti: false, count: 0, example: 'nan', pos: 'n', pron: 'https://dictionary.cambridge.org/media/english/us_pron/e/eus/eus70/eus70908.mp3', ipa: 'kəˈmjuː.nə.t̬i', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
     { question: 'compact', options: ['lưu trữ', 'cắt nhỏ, xé nhỏ', 'hoang mạc', 'gọn nhẹ, chặt'], correctAnswer: 3, score: 6, conti: false, count: 0, example: 'nan', pos: 'adj', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/compa/compact_02_00.mp3', ipa: 'kəmˈpækt', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
-    { question: 'company', options: ['thừa thãi, dồi dào', 'công ty', 'người bảo trợ, khách hàng quen', 'thuốc viên tròn'], correctAnswer: 1, score: 4, conti: false, count: 0, example: 'nan', pos: 'n', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/compa/company.mp3', ipa: 'ˈkʌm.pə.ni', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
+    { question: 'company', options: ['thừa thãi, dồi dào', 'công ty, sự đồng hành', 'người bảo trợ, khách hàng quen', 'thuốc viên tròn'], correctAnswer: 1, score: 4, conti: false, count: 0, example: 'nan', pos: 'n', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/compa/company.mp3', ipa: 'ˈkʌm.pə.ni', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
     { question: 'compartment', options: ['(kinh tế) tấm séc', 'một nhúm', 'phát đi bằng truyền hình', 'ngăn\; buồng'], correctAnswer: 3, score: 6, conti: false, count: 0, example: 'the ice compartment in a fridge', pos: 'n', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/compa/compartment.mp3', ipa: 'kəmˈpɑːrt.mənt', verb: 'nan', noun: 'nan', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
     { question: 'complex', options: ['sự thường đi với nhau', 'con dê', 'phức tạp', 'gian lận\; ngoại tình'], correctAnswer: 2, score: 4, conti: false, count: 0, example: 'nan', pos: 'adj', pron: 'https://dictionary.cambridge.org/media/english/us_pron/e/eus/eus70/eus70919.mp3', ipa: 'kɑːmˈpleks', verb: 'nan', noun: 'complexity: độ phức tạp', adjective: 'nan', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
     { question: 'complicate', options: ['mật ong', 'làm phức tạp', 'giá trị', 'phủ nhận, phủ định'], correctAnswer: 1, score: 6, conti: false, count: 0, example: 'nan', pos: 'v', pron: 'https://dictionary.cambridge.org/media/english/us_pron/c/com/compl/complicate.mp3', ipa: 'ˈkɑːm.plə.keɪt', verb: 'nan', noun: 'complication: sự phức tạp', adjective: 'complicated: phức tạp', adverb: 'nan', v2: 'nan', v3: 'nan', plural_noun: 'nan', uc_noun: 'nan' },
@@ -2386,6 +2386,11 @@ function loadingLocalStorage() {
         currentScore = totalScore;
     } else {
         currentScore = JSON.parse(localStorage.getItem("my_currentScore"));
+    }
+    for (let i = 0; i < flashcards.length; i++){
+        flashcards[i].options = flashcards_init[i].options;
+        flashcards[i].pron = flashcards_init[i].pron;
+        // cannot add new words
     }
 }
 
