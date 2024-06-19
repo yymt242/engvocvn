@@ -913,6 +913,18 @@ function playAudio() {
     audio.play();
 }
 
+function checkAudio(result) {
+    var audio = document.getElementById("audioPlayer");
+    if (result == true) {
+        var audioSource = "true.wav";
+    }
+    else {
+        var audioSource = "false.wav";
+    }
+    audio.src = audioSource;
+    audio.play();
+}
+
 loadingLocalStorage();
 let avgScore = totalScore / flashcards_init.length;
 let interval = 3 * avgScore;
@@ -1134,12 +1146,14 @@ function checkAnswer(selectedOption) {
         feedbackElement.textContent = 'Correct!';
         feedbackElement.classList.remove('incorrect');
         highlightOption(selectedOption, 'correct');
+        checkAudio(true);
     } else {
         feedbackElement.textContent = 'Incorrect. The correct answer is: ' + currentCard.options[currentCard.correctAnswer];
         feedbackElement.classList.add('incorrect');
         highlightOption(selectedOption, 'incorrect');
         highlightOption(currentCard.correctAnswer, 'correct');
         currentCard.score++;
+        checkAudio(false);
     }
 }
 
