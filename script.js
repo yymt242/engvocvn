@@ -994,6 +994,10 @@ function selectNextIndex(flashcards) {
             let randomPercent = (Math.random() * 100)/100;
             if (randomPercent > passPercent) {
                 let newwordList = noConti.filter(card => card.count === 0);
+                let forgetWord = newwordList.filter(card => card.score !== 0);
+                if (forgetWord.length > 0) {
+                    return flashcards.findIndex(card => card === forgetWord[0]); 
+                }
                 if (newwordList.length > 0) {
                     let randomIndex = Math.floor(Math.random() * newwordList.length);
                     return flashcards.findIndex(card => card === newwordList[randomIndex]); 
@@ -1251,6 +1255,7 @@ function checkAnswer(selectedOption) {
         highlightOption(selectedOption, 'incorrect');
         highlightOption(currentCard.correctAnswer, 'correct');
         currentCard.score++;
+        currentCard.count = 0;
         checkAudio(false);
     }
 }
@@ -1272,6 +1277,7 @@ function checkAnswerRev(selectedOption, correctAnswer, text) {
         highlightOption(correctAnswer, 'correct');
         currentCard.score++;
         currentRevIndex--;
+        currentCard.count = 0;
         checkAudio(false);
     }
 }
