@@ -871,11 +871,37 @@ for (let i = 0; i < flashcards_init.length; i++){
 let currentCardIndex = 0;
 let currentScore = totalScore;
 let flashcards = flashcards_init;
+let currentRevIndex = 0;
+let reviewMode = 1;
 
+function reviewList(flashcards) {
+    let learned = flashcards.filter(card => card.score === 0);
+    learned.sort((a, b) => a.count - b.count);
+    return learned;
+}
+
+function toggleReviewMode() {
+    if (reviewMode == 0) {
+        reviewMode = 1;
+        percentReview.innerText = 'OFF';
+    }
+    else {
+        reviewMode = 0;
+        let revList = reviewList(flashcards)
+        percentReview.innerText = currentRevIndex.toFixed(0)  + '/' + revList.length.toFixed(0);
+    }
+}
+
+function resetReview() {
+    currentRevIndex = 0;
+    let revList = reviewList(flashcards);
+    percentReview.innerText = currentRevIndex.toFixed(0)  + '/' + revList.length.toFixed(0);
+}
 function resetLocalStorage() {
     localStorage.setItem("my_flashcards", null);
     localStorage.setItem("my_currentCardIndex", null);
     localStorage.setItem("my_currentScore", totalScore);
+    localStorage.setItem("my_currentRevIndex", null);
     loadingLocalStorage();
     location.reload();
 }
@@ -904,6 +930,12 @@ function loadingLocalStorage() {
         flashcards[i].pron = flashcards_init[i].pron;
         // cannot add new words
     }
+    // GET currentRevIndex
+    if (JSON.parse(localStorage.getItem("my_currentRevIndex")) === null) {
+        currentRevIndex = 0;
+    } else {
+        currentRevIndex = JSON.parse(localStorage.getItem("my_currentRevIndex"));
+    }
 }
 
 function playAudio() {
@@ -929,7 +961,6 @@ loadingLocalStorage();
 let avgScore = totalScore / flashcards_init.length;
 let interval = 3 * avgScore;
 let passPercent = (interval - 3) / interval;
-console.log(passPercent);
 let counter = 1;
 
 
@@ -951,6 +982,7 @@ const progressBarFill = document.getElementById('progress-bar-fill');
 const nextButton = document.getElementById('nextButton');
 const prevButton = document.getElementById('prevButton');
 let percentElement = document.getElementById('percent-finish');
+let percentReview = document.getElementById('percent-review');
 
 function selectNextIndex(flashcards) {
     let listScoreNOT0 = flashcards.filter(card => card.score > 0);
@@ -1049,22 +1081,32 @@ function skipCard() {
     flashcards[currentCardIndex].score = 0;
     showNextCard();
 }
-function showCard(index) {
-    const currentCard = flashcards[index];
-    if (currentCard.count == 0) {
-        showDef(currentCard.question, currentCard.options[currentCard.correctAnswer], currentCard.pos, currentCard.ipa, currentCard.example, 
-            currentCard.plural_noun, currentCard.uc_noun, currentCard.verb, currentCard.noun, currentCard.adjective, currentCard.adverb, currentCard.v2, currentCard.v3)
-        for (let i = 0; i < flashcards.length; i++){
-            flashcards[i].conti = false;
-        }
-        currentCard.conti = true;
+
+
+function selectThreeUniqueCards(flashcards, currentCard) {
+    let thelist = flashcards.filter(card => card.question !== currentCard.question);
+    
+    for (let i = thelist.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [thelist[i], thelist[j]] = [thelist[j], thelist[i]];
     }
-    else {
-        questionElement.textContent = currentCard.question;
+    let selectedCards = thelist.slice(0, 3);
+    return selectedCards;
+}
+
+function showCard(index) {
+    if (reviewMode == 0) {
+        let revList = reviewList(flashcards);
+        percentReview.innerText = (currentRevIndex+1).toFixed(0)  + '/' + revList.length.toFixed(0);
+        let currentCard = revList[currentRevIndex];
+        
+        
+        questionElement.textContent = "";
         posElement.textContent = "    (" + currentCard.pos + ")";
-        ipaElement.textContent = "";
+        meaningElement.textContent = currentCard.options[currentCard.correctAnswer];
+        feedbackElement.textContent = '';
         exampleElement.textContent = "";
-        meaningElement.textContent = '';
+        ipaElement.textContent = '';
         plural_nounElement.textContent = "";
         uc_nounElement.textContent = "";
         verbElement.textContent = "";
@@ -1072,57 +1114,113 @@ function showCard(index) {
         adjectiveElement.textContent = "";
         adverbElement.textContent = "";
         v2Element.textContent = "";
-        for (let i = 0; i < flashcards.length; i++){
-            flashcards[i].conti = false;
-        }
-        currentCard.conti = true;
-        // Display options
+
+        let select3 = selectThreeUniqueCards(flashcards, currentCard);
+        let correctAns = Math.floor(Math.random() * (4));
+        let a = [0, 1, 2, 3];
+        a = a.filter(i => i !== correctAns);
+
+        let a_opt = ["", "", "", ""];
+        a_opt[correctAns] = currentCard.question;
+        a_opt[a[0]] = select3[0].question;
+        a_opt[a[1]] = select3[1].question;
+        a_opt[a[2]] = select3[2].question;
+        
         optionsContainer.innerHTML = '';
-        for (let i = 0; i < currentCard.options.length; i++) {
+        for (let i = 0; i < 4; i++) {
             const optionButton = document.createElement('button');
             optionButton.classList.add('option');
-            optionButton.textContent = currentCard.options[i];
+            optionButton.textContent = a_opt[i];
             optionButton.onclick = function() {
-                checkAnswer(i);
+                checkAnswerRev(i, correctAns, a_opt[correctAns]);
             };
             optionsContainer.appendChild(optionButton);
         }
-    
-        // Clear previous feedback
-        feedbackElement.textContent = '';
-        feedbackElement.classList.remove('incorrect');
-        
-        // Update progress bar
-        currentScore = 0;
-        for (let i = 0; i < flashcards.length; i++){
-            currentScore = currentScore + flashcards[i].score;
+
+        if  (currentRevIndex < revList.length-1) {
+            currentRevIndex++;
+        } else {
+            feedbackElement.textContent = "End of review list";
+            
         }
-        if (currentScore == 1) {currentScore = 0;}
-        const progress = (1 - currentScore / totalScore) * 100;
-        
-        let totalWord = flashcards.length;
-        let learnedWord = (flashcards.filter(card => card.score === 0)).length;
-        if (learnedWord == totalWord -1) {learnedWord = totalWord};
-        percentElement.innerText = learnedWord.toFixed(0)  + '/' + totalWord.toFixed(0);
-        
-        // Check if progressBarFill exists before updating its width
-        if (progressBarFill) {
-            progressBarFill.style.width = progress + '%';
+        localStorage.setItem("my_currentRevIndex", JSON.stringify(currentRevIndex));   
+    }
+    else {
+        percentReview.innerText = 'OFF';
+        const currentCard = flashcards[index];
+        if (currentCard.count == 0) {
+            showDef(currentCard.question, currentCard.options[currentCard.correctAnswer], currentCard.pos, currentCard.ipa, currentCard.example, 
+                currentCard.plural_noun, currentCard.uc_noun, currentCard.verb, currentCard.noun, currentCard.adjective, currentCard.adverb, currentCard.v2, currentCard.v3)
+            for (let i = 0; i < flashcards.length; i++){
+                flashcards[i].conti = false;
+            }
+            currentCard.conti = true;
         }
+        else {
+            questionElement.textContent = currentCard.question;
+            posElement.textContent = "    (" + currentCard.pos + ")";
+            ipaElement.textContent = "";
+            exampleElement.textContent = "";
+            meaningElement.textContent = '';
+            plural_nounElement.textContent = "";
+            uc_nounElement.textContent = "";
+            verbElement.textContent = "";
+            nounElement.textContent = "";
+            adjectiveElement.textContent = "";
+            adverbElement.textContent = "";
+            v2Element.textContent = "";
+            for (let i = 0; i < flashcards.length; i++){
+                flashcards[i].conti = false;
+            }
+            currentCard.conti = true;
+            // Display options
+            optionsContainer.innerHTML = '';
+            for (let i = 0; i < currentCard.options.length; i++) {
+                const optionButton = document.createElement('button');
+                optionButton.classList.add('option');
+                optionButton.textContent = currentCard.options[i];
+                optionButton.onclick = function() {
+                    checkAnswer(i);
+                };
+                optionsContainer.appendChild(optionButton);
+            }
+        
+            // Clear previous feedback
+            feedbackElement.textContent = '';
+            feedbackElement.classList.remove('incorrect');
+            
+            // Update progress bar
+            currentScore = 0;
+            for (let i = 0; i < flashcards.length; i++){
+                currentScore = currentScore + flashcards[i].score;
+            }
+            if (currentScore == 1) {currentScore = 0;}
+            const progress = (1 - currentScore / totalScore) * 100;
+            
+            let totalWord = flashcards.length;
+            let learnedWord = (flashcards.filter(card => card.score === 0)).length;
+            if (learnedWord == totalWord -1) {learnedWord = totalWord};
+            percentElement.innerText = learnedWord.toFixed(0)  + '/' + totalWord.toFixed(0);
+            
+            // Check if progressBarFill exists before updating its width
+            if (progressBarFill) {
+                progressBarFill.style.width = progress + '%';
+            }
+        }
+        
+        if (currentCard.count == 0) {
+            currentCard.count = counter;
+        }
+        if (currentCard.score > 0) {
+            currentCard.score--;
+        }
+        
+        counter++;
+        // save to localStorage
+        localStorage.setItem("my_flashcards", JSON.stringify(flashcards));
+        localStorage.setItem("my_currentScore", JSON.stringify(currentScore));
+        localStorage.setItem("my_currentCardIndex", JSON.stringify(currentCardIndex));
     }
-    
-    if (currentCard.count == 0) {
-        currentCard.count = counter;
-    }
-    if (currentCard.score > 0) {
-        currentCard.score--;
-    }
-    
-    counter++;
-    // save to localStorage
-    localStorage.setItem("my_flashcards", JSON.stringify(flashcards));
-    localStorage.setItem("my_currentScore", JSON.stringify(currentScore));
-    localStorage.setItem("my_currentCardIndex", JSON.stringify(currentCardIndex));
 }
 
 function showNextCard() {
@@ -1153,6 +1251,27 @@ function checkAnswer(selectedOption) {
         highlightOption(selectedOption, 'incorrect');
         highlightOption(currentCard.correctAnswer, 'correct');
         currentCard.score++;
+        checkAudio(false);
+    }
+}
+
+
+function checkAnswerRev(selectedOption, correctAnswer, text) {
+    let i = flashcards.findIndex(card => card.question === text);
+    const currentCard = flashcards[i];
+    // Display feedback with colors
+    if (selectedOption === correctAnswer) {
+        feedbackElement.textContent = 'Correct!';
+        feedbackElement.classList.remove('incorrect');
+        highlightOption(selectedOption, 'correct');
+        checkAudio(true);
+    } else {
+        feedbackElement.textContent = 'Incorrect. The correct answer is: ' + text;
+        feedbackElement.classList.add('incorrect');
+        highlightOption(selectedOption, 'incorrect');
+        highlightOption(correctAnswer, 'correct');
+        currentCard.score++;
+        currentRevIndex--;
         checkAudio(false);
     }
 }
